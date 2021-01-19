@@ -44,3 +44,31 @@ class  BinaryTree(Tree):
             yield self.left(p)
         if self.right(p) is not None:
             yield self.right(p)
+
+    def inorder(self):
+        """
+        Generates an inorder traversal of the Tree's Positions
+        Specific to Binary Trees 
+        """
+        if not self.is_empty():
+            for p in self._sub_inorder(self.root()):
+                yield p
+
+    def _sub_inorder(self, p):
+        """
+        Generates an inorder traversal of the subtree rooted at p
+        """
+        if self.left(p) is not None:
+            for other in self._sub_inorder(self.left(p)):
+                    yield  other
+        yield p
+        if self.right(p) is not None:
+            for other in self._sub_inorder(self.right(p)):
+                yield other
+
+    def positions(self):
+        """
+        Generates an iteration of the Tree's Positions using inorder traversal
+        Overrides the preorder positions of the Tree class
+        """
+        return self.inorder()

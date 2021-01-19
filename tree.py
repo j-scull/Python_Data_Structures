@@ -1,3 +1,5 @@
+from linked_queue import LinkedQueue
+
 class Tree:
     """
     Abstract base class representing a Tree structure
@@ -111,3 +113,66 @@ class Tree:
         if p is None:
             p == self.root()
         return self._height(p)
+
+    #-----------------------------Tree iteration methods-----------------------------------
+
+    def __iter__(self):
+        """
+        Generates an iteration of the Tree's elements
+        """
+        for p in self.positions():
+            yield p.element()
+
+    def preorder(self):
+        """
+        Generates a preorder traversal of the Positions in the Tree
+        """
+        if not self.is_empty():
+            for p in self._sub_preorder(self.root()):
+                yield p
+
+    def _sub_preorder(self, p):
+        """
+        Generates a preorder traversal of the Positions in the subtree rooted at p
+        p: a Position in the Tree
+        """
+        yield p
+        for c in self.children(p):
+            for other in self._sub_preorder(c):
+                yield other
+
+    def positions(self):
+        """
+        Generates an iteration of the Tree's Positions using preorder
+        """
+        return self.preorder()
+
+    def postorder(self):
+        """
+        Genreates a postorder traversal of the Tree's Positions
+        """
+        if not self.is_empty():
+            for p in self._sub_postorder(self.root()):
+                yield p
+
+    def _sub_postorder(self, p):
+        """
+        Generates a postorder traversal of the subtree rooted at p
+        """
+        for c in self.children(p):
+            for other in self._sub_postorder(c):
+                yield other
+        yield p
+
+    def breadth_first(self):
+        """
+        Generates a breadth first traversal of a Tree's positions
+        """
+        if not self.is_empty():
+            q = LinkedQueue()
+            q.enqueue(self.root())
+            while not q.is_empty():
+                for c in self.children(q.first()):
+                    q.enqueue(c)
+                yield q.dequeue()
+
