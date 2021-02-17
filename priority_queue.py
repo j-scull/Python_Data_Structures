@@ -148,5 +148,112 @@ class SortedPriorityQueue(PriorityQueue):
         return (item._key, item._value)
 
     
+#----------------------------------------------------------------------------------
+
+class HeapPriorityQueue(PriorityQueue):
+    """
+    An implementation of a Priorrity Queue using an array based heap data structure
+    -------------------------------------------------------------------------------
+    uses the _Item class from PriorityQueue
+    """
+
+
+    #--------Non-Public methods-------
+
+    #       0
+    #     /   \  
+    #    1     2
+    #   / \   /  \
+    #  3   4 5    6
+
+    def _parent(self, i):
+        return (i - 1) // 2
+
+    def _left(self, i):
+        return i * 2 + 1
+
+    def _right(self, i):
+        return i * 2 + 2
+
+    def _has_left(self, i):
+        return self._left(i) < len(self._data)
+
+    def _has_right(self, i):
+        return self._right(i) < len(self._data)
+
+    def _swap(self, i, j):
+        """
+        Swaps the the elements stored at indexex i and j 
+        """
+        self._data[i], self._data[j] = self._data[j], self._data[i]
+
+    def _upheap(self, i):
+        """
+        Performed after inserting a new element into the heap
+        Restores heap-order property
+        """
+        parent = self._parent(i)
+        if i > 0 and self._data[i] < self._data[parent]:
+            self._swap(i, parent)
+            self._upheap(parent)
+
+    def _downheap(self, i):
+        """
+        Performed after removing the minimum element from the heap
+        Restores heap-order property
+        """
+        if self._has_left(i):
+            left = self._left(i)
+            smallest = left
+            if self._has_right(i):
+                right = self._right(i)
+                if self._data[right] < self._data[left]:
+                    smallest = right
+            if self._data[smallest] < self._data[i]:
+                self._swap(i, smallest)
+                self._downheap(smallest)
+
+    #--------Public methods-----------
+
+    def __init__(self ):
+        """
+        Create an empty Priority Queue
+        """
+        self._data = []
+
+    def __len__(self):
+        """
+        returns: the number of elements in the priority queue
+        """
+        return len(self._data)
+
+    def add(self, key, value):
+        """
+        Adds a key-value pair to te priority queue
+        """
+        self._data.append(self._Item(key, value))
+        self._upheap(len(self._data) - 1)
+
+
+    def min(self):
+        """
+        returns: the key-value pair with the minimum key without removal
+        """
+        if self.is_empty():
+            raise Empty('Priority Queue is empty')
+        item = self._data[0]
+        return (item._key, item._value)
+
+    def remove_min(self):
+        """
+        returns: the key-value pair with the minimal key removed from the priority queue
+        """
+        if self.is_empty():
+            raise Empty('Priority Queue is empty')
+        self._swap(0, len(self._data) - 1)
+        item = self._data.pop()
+        self._downheap(0)
+        return (item._key, item._value)
+
 
     
