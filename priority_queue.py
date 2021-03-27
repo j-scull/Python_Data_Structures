@@ -213,13 +213,32 @@ class HeapPriorityQueue(PriorityQueue):
                 self._swap(i, smallest)
                 self._downheap(smallest)
 
+    def _heapify(self):
+        """
+        Performs bottom-up construction for a new heap
+        """
+        #       0             0             X
+        #     /   \         /   \         /   \  
+        #    0     0       X     X       X     X
+        #   / \   /  \    / \   /  \    / \   /  \
+        #  X   X X    X  X   X X    X  X   X X    X
+        start = self._parent(len(self) - 1)   # starts at the parent of the last leaf
+        for i in range(start, -1, -1):
+            self._downheap(i)
+
     #--------Public methods-----------
 
-    def __init__(self ):
+    def __init__(self, contents=()):
         """
-        Create an empty Priority Queue
+        Create an new Priority Queue
+        If contents is given creates a heap using bottom up construction, 
+        otherwise creates an empty heap
+
+        contents: an iterable sequence of (k,v) tuples
         """
-        self._data = []
+        self._data = [self._Item(k, v) for k, v in contents]
+        if len(self._data) > 1:
+            self._heapify()
 
     def __len__(self):
         """
